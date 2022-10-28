@@ -1,0 +1,10 @@
+.auth-label {
+  display: flex;
+  flex-direction: column; 
+  margin-bottom: 12px;
+}
+
+.question_text {
+  display: inline-block;
+  margin-right: 7px;
+}
