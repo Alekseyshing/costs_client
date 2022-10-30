@@ -1,5 +1,6 @@
 import { createEffect } from "effector";
-import { ICreateCost, IGetCost } from "../types";
+import { IBaseEffectArgs, ICreateCost, IRefreshToken } from "../types";
+import { removeUser } from "../utils/Auth";
 import api from './axiosClient';
 
 export const createCostFx = createEffect(async ({ url, cost, token }: ICreateCost) => {
@@ -11,11 +12,29 @@ export const createCostFx = createEffect(async ({ url, cost, token }: ICreateCos
   }
 });
 
-export const getCostFx = createEffect(async ({ url, token }: IGetCost) => {
+export const getCostFx = createEffect(async ({ url, token }: IBaseEffectArgs) => {
   try {
     const { data } = await api.get(url, { headers: { 'Authorization': `Barer ${token}` } })
     return data;
   } catch (error) {
     console.log(error);
+  }
+})
+
+export const refreshTokenFX = createEffect(async ({ url, token, username }: IRefreshToken) => {
+  try {
+    const result = await api.post(url, { refresh_token: token, username });
+    if (result.status === 200) {
+      localStorage.setItem('auth', JSON.stringify({
+        ...result.data,
+        username
+      }));
+
+      return result.data.access_token
+    } else {
+      removeUser()
+    }
+  } catch (error) {
+
   }
 })
