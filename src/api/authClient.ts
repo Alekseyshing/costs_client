@@ -4,8 +4,6 @@ import api from './axiosClient'
 
 export class AuthClient {
   static async login(username: string, password: string) {
-    console.log(111)
-
     try {
       const result = await api.post('/auth/login', { username, password });
       console.log(result);
