@@ -10,4 +10,11 @@ export interface IAlertProps {
 export interface ISpinnerProps {
   top: number;
   left: number;
-} 
+}
+
+export interface ICost {
+  text: string;
+  price: number;
+  date: Date | string;
+  _id?: number | string;
+}

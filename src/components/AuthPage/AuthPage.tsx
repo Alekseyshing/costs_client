@@ -1,7 +1,7 @@
 import React, { MutableRefObject, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthClient } from "../../api/authClient";
-import { setAlert } from "../../context/alert";
+import { handleAlertMessage } from "../../utils/Auth";
 import { Spinner } from "../Spinner/Spinner";
 import "./styles.css"
 
@@ -9,42 +9,51 @@ export const AuthPage = ({ type }: { type: 'login' | 'registration' }) => {
   const currentAuthTitle = type === 'login' ? 'Войти' : 'Регистрация';
   const [spinner, setSpinner] = useState(false);
   const userNameRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const passwordNameRef = useRef() as MutableRefObject<HTMLInputElement>;
-  const navigate = useNavigate()
+  const passwordRef = useRef() as MutableRefObject<HTMLInputElement>;
+  const navigate = useNavigate();
+
+  const handleAuthResponse = (
+    result: boolean | undefined,
+    navigatePath: string,
+    alertText: string
+  ) => {
+    if (!result) {
+      setSpinner(false);
+      return;
+    }
+
+    setSpinner(false);
+    navigate(navigatePath);
+    handleAlertMessage({ alertText, alertStatus: 'success' });
+  }
+
   const handleLogin = async (username: string, password: string) => {
-    if (!username || password) {
+    if (!username || !password) {
+      setSpinner(false);
+      handleAlertMessage({ alertText: 'Заполните все поля', alertStatus: 'warning' });
       return;
     }
 
     const result = await AuthClient.login(username, password);
-    if (!result) {
-      setSpinner(false);
-      return
-    }
-    setSpinner(false);
-    navigate('/costs');
-    setAlert({ alertText: 'Вход выполнен', alertStatus: 'success' })
+
+    handleAuthResponse(result, '/costs', 'Вход выполнен')
   }
 
   const handleRegistration = async (username: string, password: string) => {
-    if (!username || password) {
+    if (!username || !password) {
+      setSpinner(false);
+      handleAlertMessage({ alertText: 'Заполните все поля', alertStatus: 'warning' });
       return;
     }
 
     if (password.length < 4) {
+      setSpinner(false);
+      handleAlertMessage({ alertText: 'Пароль должен содержать более 4-х символов', alertStatus: 'warning' });
       return;
     }
 
-
-    const result = await AuthClient.login(username, password);
-
-    if (!result) {
-      setSpinner(false);
-      return
-    }
-    setSpinner(false);
-    navigate('/login');
-    setAlert({ alertText: 'Регистрация выполнена', alertStatus: 'success' })
+    const result = await AuthClient.registration(username, password);
+    handleAuthResponse(result, '/login', 'Регистрация выполнена')
   }
 
   const handleAuth = (event: React.FormEvent<HTMLFormElement>) => {
@@ -53,10 +62,10 @@ export const AuthPage = ({ type }: { type: 'login' | 'registration' }) => {
 
     switch (type) {
       case 'login':
-        handleLogin(userNameRef.current.value, passwordNameRef.current.value)
+        handleLogin(userNameRef.current.value, passwordRef.current.value)
         break;
       case 'registration':
-        handleRegistration(userNameRef.current.value, passwordNameRef.current.value)
+        handleRegistration(userNameRef.current.value, passwordRef.current.value)
         break;
       default:
         break;
@@ -69,15 +78,17 @@ export const AuthPage = ({ type }: { type: 'login' | 'registration' }) => {
       <form onSubmit={handleAuth} className="form-group">
         <label className="auth-label">
           Введите имя пользователя
-          <input type="text" className="form-control" />
+          <input ref={userNameRef} type="text" className="form-control" />
         </label>
 
         <label className="auth-label">
           Введите  пароль
-          <input type="text" className="form-control" />
+          <input ref={passwordRef} type="password" className="form-control" />
         </label>
 
-        <button className="btn btn-primary auth-btn">{spinner ? <Spinner top={5} left={20} /> : currentAuthTitle}</button>
+        <button className="btn btn-primary auth-btn">
+          {spinner ? <Spinner top={5} left={20} /> : currentAuthTitle}
+        </button>
       </form>
       {
         type === 'login'
