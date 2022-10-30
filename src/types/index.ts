@@ -20,7 +20,7 @@ export interface ICost {
   text: string;
   price: number;
   date: Date | string;
-  _id: number | string;
+  _id?: number | string;
 }
 
 export interface IBaseEffectArgs {
@@ -40,4 +40,9 @@ export interface IHandleAxiosErrorPayload {
   type: string;
   createCost?: Partial<ICreateCost>;
   getCosts?: Partial<IBaseEffectArgs>;
+}
+
+export interface ICostsItemProps {
+  cost: ICost;
+  index: number;
 }
