@@ -9,7 +9,7 @@ export const createCostFx = createEffect(async ({ url, cost, token }: ICreateCos
     const { data } = await api.post(url, { ...cost }, { headers: { 'Authorization': `Barer ${token}` } })
     return data;
   } catch (error) {
-    console.log(error);
+    handleAxiosError(error, { type: 'create', createCost: { cost } });
   }
 });
 
