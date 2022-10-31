@@ -1,5 +1,5 @@
 import { createEffect } from "effector";
-import { IBaseEffectArgs, ICreateCost, IDeleteCost, IRefreshToken } from "../types";
+import { IBaseEffectArgs, ICreateCost, IDeleteCost, IRefreshToken, IUpdateCost } from "../types";
 import { removeUser } from "../utils/Auth";
 import { handleAxiosError } from "../utils/errors";
 import api from './axiosClient';
@@ -10,6 +10,15 @@ export const createCostFx = createEffect(async ({ url, cost, token }: ICreateCos
     return data;
   } catch (error) {
     handleAxiosError(error, { type: 'create', createCost: { cost } });
+  }
+});
+
+export const updateCostFx = createEffect(async ({ url, cost, token, id }: IUpdateCost) => {
+  try {
+    const { data } = await api.patch(`${url}/${id}`, { ...cost }, { headers: { 'Authorization': `Barer ${token}` } })
+    return data;
+  } catch (error) {
+    handleAxiosError(error, { type: 'update', updateCost: { cost, id } });
   }
 });
 
