@@ -1,10 +1,12 @@
 import { useStore } from "effector-react";
-import { $username } from "../../context/auth";
+import { $auth, $username } from "../../context/auth";
 import { useTheme } from "../../hooks/index"
+import { removeUser } from "../../utils/Auth";
 
 export const Header = () => {
   const { switchTheme, theme } = useTheme();
   const username = useStore($username);
+  const loggedIn = useStore($auth);
   return (
     <header className={`navbar navbar-dark bg-${theme === 'dark' ? 'dark' : 'primary'}`}>
       <div className="container">
@@ -16,6 +18,7 @@ export const Header = () => {
         >
           {theme === 'dark' ? 'Go light' : 'Go dark'}
         </button>
+        {loggedIn && <button onClick={removeUser} className='btn btn-primary'>Выход</button>}
       </div>
     </header>
   )
