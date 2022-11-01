@@ -2,6 +2,7 @@ import { useStore } from "effector-react";
 import { $auth, $username } from "../../context/auth";
 import { useTheme } from "../../hooks/index"
 import { removeUser } from "../../utils/Auth";
+import './styles.css'
 
 export const Header = () => {
   const { switchTheme, theme } = useTheme();
@@ -14,11 +15,11 @@ export const Header = () => {
         {username.length ? <h2 style={{ color: 'white' }}>{username}</h2> : ''}
         <button
           onClick={switchTheme}
-          className={`btn btn-${theme === 'dark' ? 'dark' : 'light'}`}
+          className={`btn btn-theme btn-${theme === 'dark' ? 'dark' : 'light'}`}
         >
           {theme === 'dark' ? 'Go light' : 'Go dark'}
         </button>
-        {loggedIn && <button onClick={removeUser} className='btn btn-primary'>Выход</button>}
+        {loggedIn && <button onClick={removeUser} className='btn btn-logout btn-primary'>Выход</button>}
       </div>
     </header>
   )

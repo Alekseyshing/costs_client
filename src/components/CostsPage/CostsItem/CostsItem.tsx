@@ -99,7 +99,7 @@ export const CostsItem = ({ cost, index }: ICostsItemProps) => {
             onChange={handleChangeText}
             value={newText}
             type="text"
-            className="form-control cost-item_shop-input"
+            className="form-control cost-item__shop-input"
           />
           : <span> " {cost.text}"</span>
         }
@@ -109,7 +109,7 @@ export const CostsItem = ({ cost, index }: ICostsItemProps) => {
             onChange={handleChangeDate}
             value={new Date(newDate).toISOString().split('T')[0]}
             type="date"
-            className="form-control cost-item_date-input"
+            className="form-control cost-item__date-input"
           />
           : <span className="cost-date">Дата {formatDate(cost.date as string)}</span>
         }
@@ -121,12 +121,12 @@ export const CostsItem = ({ cost, index }: ICostsItemProps) => {
             onChange={handleChangePrice}
             value={newPrice}
             type="text"
-            className="form-control cost-item_price-input"
+            className="form-control cost-item__price-input"
           />
           : <span style={{ marginRight: '10px' }}>Сумма {cost.price}</span>
         }
         {edit
-          ? <div className="btn-block_inner">
+          ? <div className="btn-block__inner">
             <button
               className="btn btn-success btn-save"
               style={{ marginRight: '10px' }}
